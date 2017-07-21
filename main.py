@@ -13,6 +13,9 @@ dispatcher = updater.dispatcher
 def pidoreg(bot, update):
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
+    if not update.message.from_user.username:
+        update.message.reply_text('Сначала добавь ник!')
+        # exit()
     user_id = '@' + update.message.from_user.username
     c.execute('SELECT * from pidors')
     allpid = c.fetchall()
@@ -20,7 +23,7 @@ def pidoreg(bot, update):
     if user_id in getall:
         update.message.reply_text('Ей, ты уже в игре!')
     else:
-        c.execute("INSERT INTO pidors('pidor', 'wich_group', 'score') VALUES (? ,?, ?)", [user_id, update.message.chat.username, 0])
+        c.execute("INSERT INTO pidors('pidor', 'wich_group', 'score') VALUES (? ,?, ?)", [user_id, update.message.chat.id, 0])
         conn.commit()
         conn.close()
         update.message.reply_text(
@@ -47,9 +50,10 @@ def showpid(bot, update):
 def choose_pid(bot, update):
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
-    group_name = update.message.chat.username
+    group_name = update.message.chat.id
     result = c.execute("select * from pidors where wich_group=?", [group_name]).fetchall()
     control_result = c.execute("select * from available WHERE group_telega=?", [group_name]).fetchall()
+    print(control_result)
     if int(control_result[0][2]) != 0:
         id_for_random = [x[0] for x in result]
         winner = choice(id_for_random)
@@ -98,7 +102,7 @@ def choose_pid(bot, update):
 def stat(bot, update):
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
-    group_name = update.message.chat.username
+    group_name = update.message.chat.id
     data = [
         group_name,
     ]
