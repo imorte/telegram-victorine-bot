@@ -10,4 +10,6 @@ def scheduled_job():
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
     c.execute('update available set flag=? , current =?', ['1', ''])
+    conn.commit()
+    conn.close()
 sched.start()
