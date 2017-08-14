@@ -4,8 +4,9 @@ import sqlite3
 
 sched = BlockingScheduler()
 
+print('Oh i running!')
 
-@sched.scheduled_job('cron', hour=5)
+@sched.scheduled_job('cron', hour=12)
 def scheduled_job():
     conn = sqlite3.connect('db.sqlite3')
     c = conn.cursor()
